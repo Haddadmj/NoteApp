@@ -16,9 +16,26 @@ class DBHelper(
         TODO("Not yet implemented")
     }
 
-    fun insert(note:Note){
+    fun insert(note: Note) {
         val cv = ContentValues()
-        cv.put("text",note.text)
-        this.writableDatabase.insert("Notes",null,cv)
+        cv.put("Text", note.text)
+        this.writableDatabase.insert("Notes", null, cv)
+    }
+
+    fun getNotes(): ArrayList<Note> {
+        val cursor = this.readableDatabase.query("Notes", null, null, null, null, null, "id")
+
+        cursor.moveToFirst()
+        val tempList = arrayListOf<Note>()
+        while (!cursor.isAfterLast) {
+            val id = cursor.getInt(cursor.getColumnIndex("ID"))
+            val text = cursor.getString(cursor.getColumnIndex("Text"))
+            tempList.add(Note(id, text))
+            cursor.moveToNext()
+        }
+
+        cursor.close()
+
+        return tempList
     }
 }

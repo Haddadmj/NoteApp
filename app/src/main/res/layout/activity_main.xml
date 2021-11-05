@@ -9,6 +9,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMain"
+        tools:listitem="@layout/note_row"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/llMain"
@@ -32,11 +33,12 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:layout_weight="1"
+            android:hint="@string/enter_note_title"
             android:inputType="textCapWords"/>
 
         <Button
             android:id="@+id/addBtn"
-            android:hint="@string/enter_note_title"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_note"/>
