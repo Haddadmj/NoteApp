@@ -1,11 +1,12 @@
 package com.mohammad.noteapp
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 interface NoteDao {
     @Query("SELECT * FROM Notes ORDER BY ID")
-    fun getNotes() : List<Note>
+    fun getNotes() : LiveData<List<Note>>
 
     @Insert
     fun insertNote(note:Note)

@@ -32,7 +32,7 @@ class NoteAdapter(val list: List<Note>, val activity: MainActivity) : RecyclerVi
     private fun deleteDialog(note: Note) {
         val alertDialog = AlertDialog.Builder(activity)
         alertDialog.setTitle("Confirm Delete")
-        alertDialog.setPositiveButton("Save"){
+        alertDialog.setPositiveButton("Confirm"){
                 _,_-> activity.deleteNote(note)
         }
         alertDialog.setNegativeButton("Cancel"){
