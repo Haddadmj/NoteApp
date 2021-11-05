@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var etNote: EditText
     private lateinit var addButton: Button
 
-    private lateinit var dbHelper : DBHelper
+    private lateinit var noteDao: NoteDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,34 +23,34 @@ class MainActivity : AppCompatActivity() {
         mainRecyclerView = findViewById(R.id.rvMain)
         etNote = findViewById(R.id.etNote)
         addButton = findViewById(R.id.addBtn)
-        dbHelper = DBHelper(this)
+        noteDao = NoteDatabase.getInstance(this).NoteDao()
 
-        updateRV(dbHelper.getNotes())
+        updateRV(noteDao.getNotes())
 
         addButton.setOnClickListener {
-            dbHelper.insert(Note(0, etNote.text.toString()))
+            noteDao.insertNote(Note(0, etNote.text.toString()))
             Toast.makeText(applicationContext, "Note Added", Toast.LENGTH_SHORT).show()
             etNote.text.clear()
             etNote.clearFocus()
-            updateRV(dbHelper.getNotes())
+            updateRV(noteDao.getNotes())
         }
 
     }
 
 
-    private fun updateRV(list: ArrayList<Note>) {
-        mainRecyclerView.adapter = NoteAdapter(list,this)
+    private fun updateRV(list: List<Note>) {
+        mainRecyclerView.adapter = NoteAdapter(list, this)
         mainRecyclerView.layoutManager = LinearLayoutManager(this)
         mainRecyclerView.scrollToPosition(list.size - 1)
     }
 
     fun updateNote(note: Note) {
-        dbHelper.updateNote(note)
-        updateRV(dbHelper.getNotes())
+        noteDao.updateNote(note)
+        updateRV(noteDao.getNotes())
     }
 
-    fun deleteNote(id: Int) {
-        dbHelper.deleteNote(id)
-        updateRV(dbHelper.getNotes())
+    fun deleteNote(note: Note) {
+        noteDao.deleteNote(note)
+        updateRV(noteDao.getNotes())
     }
 }

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.mohammad.noteapp.databinding.NoteRowBinding
 
-class NoteAdapter(val list: ArrayList<Note>,val  activity: MainActivity) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
+class NoteAdapter(val list: List<Note>, val activity: MainActivity) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
     class ViewHolder(val binding: NoteRowBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,15 +25,15 @@ class NoteAdapter(val list: ArrayList<Note>,val  activity: MainActivity) : Recyc
         holder.binding.apply {
             tvNote.text = note.text
             editBtn.setOnClickListener { editDialog(note) }
-            deleteBtn.setOnClickListener { deleteDialog(note.id) }
+            deleteBtn.setOnClickListener { deleteDialog(note) }
         }
     }
 
-    private fun deleteDialog(id: Int) {
+    private fun deleteDialog(note: Note) {
         val alertDialog = AlertDialog.Builder(activity)
         alertDialog.setTitle("Confirm Delete")
         alertDialog.setPositiveButton("Save"){
-                _,_-> activity.deleteNote(id)
+                _,_-> activity.deleteNote(note)
         }
         alertDialog.setNegativeButton("Cancel"){
                 dialog,_ -> dialog.dismiss()
