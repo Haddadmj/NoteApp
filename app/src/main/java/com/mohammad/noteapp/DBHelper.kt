@@ -38,4 +38,14 @@ class DBHelper(
 
         return tempList
     }
+
+    fun updateNote(note: Note) {
+        val cv = ContentValues()
+        cv.put("Text", note.text)
+        this.writableDatabase.update("Notes", cv, "ID=${note.id}", null)
+    }
+
+    fun deleteNote(id: Int) {
+        this.writableDatabase.delete("Notes", "ID=$id",null)
+    }
 }

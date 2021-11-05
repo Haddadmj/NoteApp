@@ -2,10 +2,12 @@ package com.mohammad.noteapp
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.mohammad.noteapp.databinding.NoteRowBinding
 
-class NoteAdapter(val list: ArrayList<Note>) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
+class NoteAdapter(val list: ArrayList<Note>,val  activity: MainActivity) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
     class ViewHolder(val binding: NoteRowBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,7 +24,36 @@ class NoteAdapter(val list: ArrayList<Note>) : RecyclerView.Adapter<NoteAdapter.
         val note = list[position]
         holder.binding.apply {
             tvNote.text = note.text
+            editBtn.setOnClickListener { editDialog(note) }
+            deleteBtn.setOnClickListener { deleteDialog(note.id) }
         }
+    }
+
+    private fun deleteDialog(id: Int) {
+        val alertDialog = AlertDialog.Builder(activity)
+        alertDialog.setTitle("Confirm Delete")
+        alertDialog.setPositiveButton("Save"){
+                _,_-> activity.deleteNote(id)
+        }
+        alertDialog.setNegativeButton("Cancel"){
+                dialog,_ -> dialog.dismiss()
+        }
+        alertDialog.show()
+    }
+
+    private fun editDialog(note: Note) {
+        val alertDialog = AlertDialog.Builder(activity)
+        val editText = EditText(activity)
+        editText.setText(note.text)
+        alertDialog.setTitle("Edit Note")
+        alertDialog.setView(editText)
+        alertDialog.setPositiveButton("Save"){
+            _,_-> activity.updateNote(Note(note.id,editText.text.toString()))
+        }
+        alertDialog.setNegativeButton("Cancel"){
+            dialog,_ -> dialog.dismiss()
+        }
+        alertDialog.show()
     }
 
     override fun getItemCount(): Int = list.size

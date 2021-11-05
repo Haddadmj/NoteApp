@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var mainRecyclerView: RecyclerView
-    lateinit var etNote: EditText
-    lateinit var addButton: Button
+    private lateinit var mainRecyclerView: RecyclerView
+    private lateinit var etNote: EditText
+    private lateinit var addButton: Button
+
+    private lateinit var dbHelper : DBHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         mainRecyclerView = findViewById(R.id.rvMain)
         etNote = findViewById(R.id.etNote)
         addButton = findViewById(R.id.addBtn)
-        val dbHelper = DBHelper(this)
+        dbHelper = DBHelper(this)
 
         updateRV(dbHelper.getNotes())
 
@@ -35,9 +37,20 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
     private fun updateRV(list: ArrayList<Note>) {
-        mainRecyclerView.adapter = NoteAdapter(list)
+        mainRecyclerView.adapter = NoteAdapter(list,this)
         mainRecyclerView.layoutManager = LinearLayoutManager(this)
         mainRecyclerView.scrollToPosition(list.size - 1)
+    }
+
+    fun updateNote(note: Note) {
+        dbHelper.updateNote(note)
+        updateRV(dbHelper.getNotes())
+    }
+
+    fun deleteNote(id: Int) {
+        dbHelper.deleteNote(id)
+        updateRV(dbHelper.getNotes())
     }
 }
