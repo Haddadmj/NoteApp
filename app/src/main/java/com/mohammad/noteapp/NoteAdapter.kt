@@ -23,7 +23,7 @@ class NoteAdapter(val list: List<Note>, val activity: MainActivity) : RecyclerVi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val note = list[position]
         holder.binding.apply {
-            tvNote.text = note.text
+            tvNote.text = note.noteText
             editBtn.setOnClickListener { editDialog(note) }
             deleteBtn.setOnClickListener { deleteDialog(note) }
         }
@@ -44,11 +44,11 @@ class NoteAdapter(val list: List<Note>, val activity: MainActivity) : RecyclerVi
     private fun editDialog(note: Note) {
         val alertDialog = AlertDialog.Builder(activity)
         val editText = EditText(activity)
-        editText.setText(note.text)
+        editText.setText(note.noteText)
         alertDialog.setTitle("Edit Note")
         alertDialog.setView(editText)
         alertDialog.setPositiveButton("Save"){
-            _,_-> activity.updateNote(Note(note.id,editText.text.toString()))
+            _,_-> activity.updateNote(Note(note.timestamp,editText.text.toString()))
         }
         alertDialog.setNegativeButton("Cancel"){
             dialog,_ -> dialog.dismiss()

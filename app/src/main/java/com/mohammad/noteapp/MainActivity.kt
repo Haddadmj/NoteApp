@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         addButton.setOnClickListener {
-            mainViewModel.addNote(Note(0, etNote.text.toString()))
+            mainViewModel.addNote(Note(Timestamp.now(), etNote.text.toString()))
             Toast.makeText(applicationContext, "Note Added", Toast.LENGTH_SHORT).show()
             etNote.text.clear()
             etNote.clearFocus()

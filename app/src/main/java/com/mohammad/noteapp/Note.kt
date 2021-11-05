@@ -3,8 +3,11 @@ package com.mohammad.noteapp
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.Timestamp
 
-@Entity(tableName = "Notes")
 data class Note(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name="ID") val id:Int,
-    @ColumnInfo (name="Text") val text:String)
+    val timestamp: Timestamp,
+    val noteText:String
+){
+    constructor() :this(Timestamp.now(),"")
+}
