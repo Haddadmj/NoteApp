@@ -4,10 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.mohammad.noteapp.databinding.NoteRowBinding
 
-class NoteAdapter(val list: List<Note>, val activity: MainActivity) : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
+class NoteAdapter(val listNotesFragment: ListNotesFragment) :
+    RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
+    var notes: List<Note> = emptyList()
+
     class ViewHolder(val binding: NoteRowBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -21,41 +25,39 @@ class NoteAdapter(val list: List<Note>, val activity: MainActivity) : RecyclerVi
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val note = list[position]
+        val note = notes[position]
         holder.binding.apply {
             tvNote.text = note.noteText
-            editBtn.setOnClickListener { editDialog(note) }
+            editBtn.setOnClickListener {
+                with(listNotesFragment.sharedPreferences.edit()){
+                    putString("NoteText",note.noteText)
+                    putString("NoteID",note.id)
+                    apply()
+                }
+                listNotesFragment.findNavController().navigate(R.id.action_listNotesFragment_to_updateNoteFragment)
+            }
             deleteBtn.setOnClickListener { deleteDialog(note) }
         }
     }
 
     private fun deleteDialog(note: Note) {
-        val alertDialog = AlertDialog.Builder(activity)
+        val alertDialog = AlertDialog.Builder(listNotesFragment.requireContext())
         alertDialog.setTitle("Confirm Delete")
-        alertDialog.setPositiveButton("Confirm"){
-                _,_-> activity.deleteNote(note)
+        alertDialog.setPositiveButton("Confirm") { _, _ ->
+            listNotesFragment.deleteNote(note)
         }
-        alertDialog.setNegativeButton("Cancel"){
-                dialog,_ -> dialog.dismiss()
-        }
-        alertDialog.show()
-    }
-
-    private fun editDialog(note: Note) {
-        val alertDialog = AlertDialog.Builder(activity)
-        val editText = EditText(activity)
-        editText.setText(note.noteText)
-        alertDialog.setTitle("Edit Note")
-        alertDialog.setView(editText)
-        alertDialog.setPositiveButton("Save"){
-            _,_-> activity.updateNote(Note(note.timestamp,editText.text.toString()))
-        }
-        alertDialog.setNegativeButton("Cancel"){
-            dialog,_ -> dialog.dismiss()
+        alertDialog.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
         }
         alertDialog.show()
     }
 
-    override fun getItemCount(): Int = list.size
+
+    override fun getItemCount(): Int = notes.size
+
+    fun update(list: List<Note>) {
+        this.notes = list
+        notifyDataSetChanged()
+    }
 
 }
